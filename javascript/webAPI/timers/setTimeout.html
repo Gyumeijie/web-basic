@@ -1,0 +1,27 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <title>default action, timer</title>
+<body>
+<input type="text" onchange="handle(this,event)" />
+<div id="a">input is:</div>
+<script>
+function handle(that,event){
+    // the default event for input element is to assign the new input
+    // value to it's value attribute.And this default event is called
+    // after the onkeydown handler.So the first sinppet doesn't work.
+    //
+    // document.getElementById('a').innerHTML='input is: ' + that.value;
+
+    // In this way we can invert the execution order between `default event`
+    // and certain event handler(onkeydown, oninput or may be other event).
+    // For more infomation see https://javascript.info/default-browser-action.
+    setTimeout(function(){
+       document.getElementById('a').innerHTML='input is: ' + that.value;
+       },0);
+
+}
+</script>
+</body>
+</html>
