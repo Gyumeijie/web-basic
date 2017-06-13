@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+        <meta charset="utf-8">
+        <title>jsonp test</title>
+  </head>
+
+   <body>
+        <button id="get"> asynchronously get data</button>
+        <div id="show-result"></div>
+        <script>
+              function afterGetJsonp(json){
+
+              }
+
+             var get = document.getElementById('get');
+             var res = document.getElementById('show-result');
+             get.addEventListener('click', function(){
+                 alert('click');
+
+                 var url ='http://127.0.0.1:3000/jsonp?callback=afterGetJsonp';
+                 var script = document.createElement("script");
+                 script.setAttribute('src', url);
+                 document.body.insertBefore(script, document.body.firstChild);
+
+
+                 /*
+                 var xhr = new XMLHttpRequest();
+                  xhr.onload = function(){
+                  res.innerHTML = this.responseText;
+                  // parses the string, and executes it
+                  eval(this.responseText)
+                  }
+                  xhr.open('get', 'http://127.0.0.1:3000/jsonp?callback=afterGetJsonp');
+                  xhr.send(null);
+                  */
+
+
+             });
+        </script>
+   </body>
+</html>
