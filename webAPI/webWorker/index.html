@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>web worker example</title>
+        <style type="text/css">
+            div{
+                margin-left:30vw;
+                border:1px solid;
+                width: 30vw;
+                height: 40vh;
+            }
+
+        </style>
+    </head>
+    <body>
+        <p>web worker for array sorting</p>
+        <div id="div1">
+             <p>descending sort</p>
+             <ul id="show-result1"></ul>
+        </div>
+
+        <div id="div2">
+            <p>ascending sort</p>
+            <ul id="show-result2"></ul>
+        </div>
+        <script>
+
+            //array to be sorted.
+            var arr = [1,4,5,2,9,10,3];
+            var worker1 =  new Worker("worker1.js");
+            var worker2 =  new Worker("worker2.js");
+            workers = [worker1,worker2];
+
+            workers.forEach(function(worker,index){
+
+                worker.onmessage = function(event){
+                    var ul = document.querySelector("#show-result"+(index+1));
+                    var frag = document.createDocumentFragment();
+                    var sortedArr = event.data;
+                    for(var i in sortedArr){
+                        var li = document.createElement('li');
+                        li.textContent = sortedArr[i];
+                        frag.appendChild(li);
+                    }
+                    var div = "#div"+(index+1);
+                    alert(div);
+                    document.querySelector(div).appendChild(frag);
+                };
+
+                worker.onerror = function(event){
+                    console.log("error from worker")
+                };
+
+                worker.postMessage(arr);
+
+            });
+
+
+
+        </script>
+    </body>
+</html>
