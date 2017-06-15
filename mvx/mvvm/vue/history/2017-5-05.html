@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+<div id="app">
+
+    <!--
+    <home ref="home"></home>
+    <posts></posts>
+    <p id="para1" ref="htmlElement">hello</p>
+    -->
+    <!-- If we have id="comp" in <component> -->
+    <component  v-bind:is="currentView" ref="refComponent">
+    </component>
+    <button  @click="changeView">click me</button>
+
+
+</div>
+
+<script>
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            currentView: 'home',
+            viewArray:['home','posts','archive'],
+            currentViewIndex:0
+        },
+        methods:{
+          changeView:function(){
+              this.currentView = this.viewArray[(this.currentViewIndex++)%3];
+
+              /**
+               *  Where is `is` going?
+               */
+
+
+              /**
+               * We can use  Object.keys(this.$refs.refComponent) to inspect what has in the <component>
+               *
+               * this.$refs.refComponent.message  === this.$refs.refComponent._data.message
+               */
+
+
+
+               /**
+                *
+                *
+                * Object.keys(this.$refs.refComponent.$parent._data))
+                * //currentView: 'home',viewArray currentViewIndex
+                *
+                * (this.$refs.refComponent.$parent._isVue)  // true
+                *
+                * (this.$refs.refComponent.$parent.$el.id) // app
+                * (this.$refs.refComponent.$root.$el.id) //app
+                */
+
+               /**
+                *
+                * If we <component id="comp" ...>, then the ids will all be comp.
+                * Otherwise, we will get para2, para3, para4.
+                * alert(this.$refs.refComponent.$el.id)
+                */
+
+
+               /**
+                *
+                *  this.$refs.htmlElement._isVue   //undefined
+                *  this.$refs.refComponent._isVue  //true
+                *
+                *  alert(this.$refs.refComponent._isVue)
+                */
+
+                /**
+                 *
+                 * Object.keys(this.$refs.htmlElement) is null
+                 * this.$refs.htmlElement.id //para1
+                 */
+
+
+              /**
+               *  We can have a reference to posts component, as long as it become to
+               *  the child components of #app
+               * alert(this.$refs.refPosts)
+               */
+
+
+              /**
+               * alert(this.$refs.htmlElement.id)  // para1
+               * But we can't acess this.$refs.htmlElement.ref
+               */
+
+          }
+        },
+        /**
+         *  Even though we have components here, but these components are
+         *  not child componet yet.
+         */
+        components: {
+            home: {
+                template:'<p id="para2">{{message}}</p>',
+                data:function(){
+                    return {
+                        message:"welcome, you are now in home"
+                    }
+                }
+            },
+            posts: {
+            /**
+             *  We can't have  ref registered in template, instead, we should
+             *  write <posts ref='refPosts'></posts>.
+             */
+            template:'<p id="para3" ref="refPosts">{{message}}</p>',
+                data:function(){
+                    return {
+                        message:"welcome, you are now in posts"
+                    }
+                }
+            },
+            archive: {
+                template:'<p id="para4">{{message}}</p>',
+                data:function(){
+                    return {
+                        message:"welcome, you are now in archive"
+                    }
+                }
+            }
+        }
+    })
+
+
+</script>
+
+</body>
+</html>

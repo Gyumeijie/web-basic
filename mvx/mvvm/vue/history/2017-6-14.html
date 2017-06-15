@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <comp :foo="bar" v-bind:msg="message" @update:foo="val => bar = val" v-if="ok==='ok'"></comp>
+    <id-template id="id-template">
+        <button>{{label}}</button>
+    </id-template>
+</div>
+
+
+
+<script>
+
+    Vue.component("comp", {
+        template:"<button @click='updateParent'>{{foo+foo}} {{foo}} </button>",
+        props:['foo','msg'],
+        methods:{
+            updateParent:function(e){
+                this.$emit('update:foo', 'newValue')
+            }
+        }
+
+    });
+
+    Vue.component("id-template", {
+        template:"#id-template",
+        data:function(){
+            return {
+                label:"id-template-label"
+            }
+        }
+    });
+
+    var app = new Vue({
+        name:"I am app",
+        el: '#app',
+        data: {
+            message: 'Hello Vue!',
+            ok:"ok",
+            bar:'gdf'
+        }
+    })
+
+</script>
+
+</body>
+</html>

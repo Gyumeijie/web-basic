@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+
+
+<div id="app">>
+    <!--html parser will tolerate it -->
+    <i-am-not-element>I am not a valid element, but HTML will tolerate it.</i-am-not-element>
+
+    <has-no-template>I have no template</has-no-template>
+
+    <ol>
+        <!-- Now we provide each todo-item with the todo object    -->
+        <!-- it's representing, so that its content can be dynamic -->
+        <todo-item v-for="item in groceryList" v-bind:todo="item">
+          <!--
+                If we write here, then the <my-component> has no effect.
+                my-componet></my-componet>
+          -->
+        </todo-item>
+
+    </ol>
+    <!--
+       If we write here, then <todo-item> will not be rendered, and showed in the
+       dispaly.
+     <div id="app">
+
+    </div>
+    -->
+
+</div>
+
+
+<div id="app2">>
+    <ol>
+        <!-- Now we provide each todo-item with the todo object    -->
+        <!-- it's representing, so that its content can be dynamic -->
+        <todo-item v-for="item in groceryList" v-bind:todo="item">
+        </todo-item>
+
+    </ol>
+</div>
+
+<script>
+
+     var Child = {
+         /**
+          *  {{todo.text}} is passed down from parent.
+          *  But, {{message}} is own data.
+          *
+          *  All Vue.js templates are valid HTML that can be
+          *  parsed by spec-compilant browsers and HTML parsers.
+          *  ok case:
+          *  '<p>{{ todo.text }} {{message}}</p>'
+          *  ok case(can include customer elements):
+          *  '<li><my-componet v-bind:todo="todo"></my-componet></li>'
+          *  wrong case:
+          *  '{{message}}'
+          */
+         template:'<p>{{ todo.text }} {{message}}</p>',
+         props:['todo'],
+         data:function (){
+         return {
+             message:"message"
+         }
+         }
+         /**
+          * Doesn't work.
+          data:{
+             message:"message"
+         }*/
+     };
+
+     /**
+      * We can use todo-item as customer element in HTML
+      */
+    Vue.component('todo-item', // id
+        {                      // definition
+        props: ['todo'],
+        template: '<li><my-componet v-bind:todo="todo"></my-componet></li>',
+
+        /**
+         * We can use my-component as customer element in HTML
+         * <component> will only be available in the parent's
+         * tempalte--'<li>{{ todo.text }}</li>'.
+         * the following is one of the usage:
+         * <li><my-component></my-component>{{todo.text}}</li>
+         */
+        components:{
+            'my-componet': Child
+        }
+
+    });
+
+     /**
+      *
+      */
+     Vue.component('has-no-template', {
+         data: function () {
+             return {message:"I have no template"}
+         }
+     })
+
+
+
+     /**
+      *  The following component is not used in html as custom element, so the template will not parsed
+      *  during HTML parse session.
+      *
+      */
+     Vue.component('not-used-in-html', {
+         template: '<button v-on:click="counter += 1">{{ counter }}</button>',
+         // data is technically a function, so Vue won't
+         // complain, but we return the same object
+         // reference for each component instance
+         data: function () {
+             return data
+         }
+     })
+
+
+
+     var app = new Vue({
+        el: '#app',
+        data: {
+            groceryList: [
+                { text: 'Vegetables' },
+                { text: 'Cheese' },
+                { text: 'Whatever else humans are supposed to eat' }
+            ]
+        }
+    });
+
+     /**
+      *
+      * We can also have another instance
+      *
+      */
+
+     var app2 = new Vue({
+         el: '#app2',
+         data: {
+             groceryList: [
+                 { text: 'Vegetables----2' },
+                 { text: 'Cheese-----2' },
+                 { text: 'Whatever else humans are supposed to eat------2' }
+             ],
+             greeting:'template in Vue constructor function'
+
+         },
+         /**
+          * Yes, of course we can have a template here, But if we do, the existing part
+          * under the #app2 will be overwrite.Here the <ol>....</ol> will not be displayed.
+          *
+          * template: '<p>{{greeting}}</p>'
+          *
+          * If no template is supplied, then the existing is seen as it's template.
+          * /
+
+     })
+</script>
+
+</body>
+</html>

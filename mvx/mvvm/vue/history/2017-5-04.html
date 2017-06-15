@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+<div id="hook-arguments-example" >
+    <div>
+         <p>{{message2.color}}  {{message2.text}}</p>
+         <my-component :message2="message2"></my-component>
+
+    </div>
+</div>
+
+<script>
+
+    Vue.directive('demo', function (el, binding) {
+        console.log(binding.value.color) // => "white"
+        console.log(binding.value.text)  // => "hello!"
+    });
+
+    Vue.component("my-component",{
+        /**
+         *  Don't write like this:
+         *  template:"<p v-demo="message2" >{{message.color}}  {{message.text}}</p>"
+         *  template:'<p v-demo="message2" >{{message.color}}  {{message.text}}</p>'
+         *  will also be ok.
+         */
+        template:"<p v-demo='message2' >{{message.color}}  {{message.text}}</p>",
+        data: function(){
+            return {
+                message: {color: 'red', text: 'world!'},
+                /**
+                 * The data property "message2" is already declared as a prop.
+                 * Use prop default value instead.
+                 * message2: {color: 'red2', text: 'world2!'}
+                 */
+
+            }
+        },
+        /**
+         *
+         * If we don't add props, then Vue will complain :"Property or method "message2" is not
+         * defined on the instance but referenced during render.
+         * Make sure to declare reactive data properties in the data option."
+         *
+         */
+        props:['message2']
+
+    });
+    new Vue({
+        el: '#hook-arguments-example',
+        data: {
+        /**
+         *   what the scope of message2.
+         */
+
+        message2: { color: 'white', text: 'hello!' }
+        }
+    })
+</script>
+
+</body>
+</html>

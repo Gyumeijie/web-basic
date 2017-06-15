@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>a simple mvc example</title>
+    <style>
+        #A{
+            width:30vw;
+            height:30vh;
+            border:3px green solid;
+        }
+    </style>
+</head>
+<body>
+    <div id="A" ></div>
+    <script>
+        function Component(){
+
+        }
+        Component.prototype.extend = function(obj){
+            var keys = Object.keys(obj);
+            var self = this;
+            keys.forEach(function(key){
+                self[key] = obj[key];
+            });
+            return self;
+        };
+
+
+        var mustacheRe = /\{\{\w+\}\}/g;
+        function render(tpl,data){
+
+            var strTemp = tpl.replace(mustacheRe, function(match){
+                var text = match.substring(2, match.indexOf('}'));
+                return data[text];
+            })
+
+            return strTemp;
+        }
+        var component = new Component();
+        var A = component.extend({
+            $el: document.getElementById("A"),
+
+            model: {
+                text: "ViewA 渲染完成",
+
+            },
+
+            view: function view(data){
+                var tpl = '<input id="input" type="text" oninput="A.eventHandlers.input(event)" value="{{text}}">' +
+                          '<span id="showText">{{text}}</span>';
+                var html = render(tpl, data);
+                this.$el.innerHTML = html;
+            },
+            controller: function controller() {
+                var self = this;
+                self.view(self.model);
+
+                self.eventHandlers['onhashchange'] =  window.onhashchange = function($event){
+                    self.model.text = location.hash;
+                    self.view(self.model);
+                };
+
+                self.eventHandlers['input'] = function($event){
+                    self.model.text = $event.target.value;
+                    self.view(self.model);
+                }
+
+            },
+
+            eventHandlers: {},
+            init:function (){
+                this.controller();
+            }
+        });
+
+         A.init();
+    </script>
+</body>
+</html>
