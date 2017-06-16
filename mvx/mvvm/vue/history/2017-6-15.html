@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+<div id="app" class="div">
+    <p v-show="visible" > this is v-show controlled  </p>
+
+</div>
+
+
+
+<script>
+
+
+    var app = new Vue({
+        name:"I am app",
+        el: '#app',
+        data: {
+            message: 'Hello Vue!',
+            visible: true,
+            unusedData: 'not appear in HTML',
+        }
+
+    })
+
+
+    // keypath
+    //app.$watch('$data.visible', function (newVal, oldVal) {
+    //   alert("newVal "  + newVal + " oldVal  " +oldVal)
+    //})
+    /*setInterval(function(){
+        app.visible=!app.visible;
+    },5000)*/
+
+</script>
+
+</body>
+</html>
